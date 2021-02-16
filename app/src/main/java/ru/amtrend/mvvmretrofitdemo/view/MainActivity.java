@@ -1,4 +1,4 @@
-package ru.amtrend.mvvmretrofitdemo;
+package ru.amtrend.mvvmretrofitdemo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.amtrend.mvvmretrofitdemo.R;
 import ru.amtrend.mvvmretrofitdemo.adapter.ResultAdapter;
 import ru.amtrend.mvvmretrofitdemo.model.MovieApiResponse;
 import ru.amtrend.mvvmretrofitdemo.model.Result;
