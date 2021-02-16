@@ -1,6 +1,8 @@
 package ru.amtrend.mvvmretrofitdemo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +23,7 @@ import ru.amtrend.mvvmretrofitdemo.model.MovieApiResponse;
 import ru.amtrend.mvvmretrofitdemo.model.Result;
 import ru.amtrend.mvvmretrofitdemo.service.MovieApiService;
 import ru.amtrend.mvvmretrofitdemo.service.RetrofitInstance;
+import ru.amtrend.mvvmretrofitdemo.viewmodel.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,11 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ResultAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private MainActivityViewModel mainActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivityViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(MainActivityViewModel.class);
 
         getPopularMovies();
 
@@ -49,24 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void getPopularMovies() {
 
-        MovieApiService movieApiService = RetrofitInstance.getService();
-
-        Call<MovieApiResponse> call = movieApiService.getPopularMovies(getString(R.string.api_key));
-        call.enqueue(new Callback<MovieApiResponse>() {
+        mainActivityViewModel.getAllMovieData().observe(this, new Observer<List<Result>>() {
             @Override
-            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
-                MovieApiResponse movieApiResponse = response.body();
-
-                if (movieApiResponse != null && movieApiResponse.getResults() != null) {
-                    results = (ArrayList<Result>) movieApiResponse.getResults();
-                    fillRecyclerView();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
-
+            public void onChanged(List<Result> resultList) {
+                results = (ArrayList<Result>) resultList;
+                fillRecyclerView();
             }
         });
 
@@ -92,5 +86,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
