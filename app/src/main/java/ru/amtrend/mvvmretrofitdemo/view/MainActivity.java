@@ -1,6 +1,7 @@
 package ru.amtrend.mvvmretrofitdemo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -19,6 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.amtrend.mvvmretrofitdemo.R;
 import ru.amtrend.mvvmretrofitdemo.adapter.ResultAdapter;
+import ru.amtrend.mvvmretrofitdemo.databinding.ActivityMainBinding;
 import ru.amtrend.mvvmretrofitdemo.model.MovieApiResponse;
 import ru.amtrend.mvvmretrofitdemo.model.Result;
 import ru.amtrend.mvvmretrofitdemo.service.MovieApiService;
@@ -32,17 +34,20 @@ public class MainActivity extends AppCompatActivity {
     private ResultAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainActivityViewModel mainActivityViewModel;
+    private ActivityMainBinding activityMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
         mainActivityViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(MainActivityViewModel.class);
 
         getPopularMovies();
 
-        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout = activityMainBinding.swiperefresh;
         swipeRefreshLayout.setColorSchemeResources(R.color.design_default_color_primary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void fillRecyclerView() {
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = activityMainBinding.recyclerView;
         adapter = new ResultAdapter(this, results);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
