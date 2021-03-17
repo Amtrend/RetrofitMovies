@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+//        test new work space
+
         mainActivityViewModel.getPagedListLiveData().observe(this, new Observer<PagedList<Result>>() {
             @Override
             public void onChanged(PagedList<Result> resultList) {
